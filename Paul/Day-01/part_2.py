@@ -28,9 +28,14 @@ class BST:
                 return match
 
 
-input = open("input.txt")
-test = [int(x.strip()) for x in input]
-input.close()
+def get_input(file):
+    input = open(file)
+    test = [int(x.strip()) for x in input]
+    input.close()
+    return test
+
+
+test = get_input("input.txt")
 
 run_tot = 0
 i = 0
@@ -50,3 +55,4 @@ while freq is None:
     i += 1
 
 print("The frequency {} appears twice first after {} iterations".format(freq, i))
+print("Length of Sorted Set = {}".format(len(items)))

@@ -9,6 +9,7 @@ def get_input(file):
     input.close()
     return test
 
+
 # get claims data
 claims = get_input("input.txt")
 

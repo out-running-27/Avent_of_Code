@@ -1,5 +1,6 @@
 import collections
 
+
 def play_game(players, turns):
     cir = collections.deque([0])
     player_list = [0] * players

@@ -36,7 +36,7 @@ class Coordinate:
         Compute Manhattan Distance between two coordinates
         This is evaluated by taking difference in x values + the difference in y values
         (1, 3) and (3, 5) has a Manhattan Distance of 4 because:
-            |1-3| + |3 - 5| = 4
+            |1 - 3| + |3 - 5| = 4
         """
         return abs(self.x - new_coordinate.x) + abs(self.y - new_coordinate.y)
 
@@ -71,8 +71,8 @@ def read_input(file):
     """
     # if file is None:
     #     raise Exception("File Not Found")
-    input_file = open(file, "r")
-    return {id: Coordinate(literal_eval(position.strip())) for id, position in enumerate(input_file, 1)}
+    with open(file, "r") as input_file:
+        return {id: Coordinate(literal_eval(position.strip())) for id, position in enumerate(input_file, 1)}
 
 
 def find_matrix_size(coordinates):
@@ -80,7 +80,7 @@ def find_matrix_size(coordinates):
         This finds the maximum x and y values from the list of coordinates
 
         coordinates -> dict of coordinate objects
-        returns max x and y values, plus 1 added space because of 0 indexing
+        returns max rows and columns values, plus 1 added space because of 0 indexing
     """
     max_x = 0
     max_y = 0
@@ -94,8 +94,8 @@ def find_matrix_size(coordinates):
 
 def populate_matrix(matrix, coordinate_dict):
     """
-        loops through each position on matrix, and calculates the closed coordinate from input coordinates
-        modifies the matrix in place with the ID if the closed input coordinate.
+        loops through each position on matrix, and calculates the closest coordinate from input coordinates
+        modifies the matrix in place with the ID of the closest input coordinate.
         if two points are of equal distance, 0 is recorded for that position
 
         the function also determines the ids of points which are located on the edge of the matrix
@@ -120,7 +120,7 @@ def populate_matrix(matrix, coordinate_dict):
             closest_distance = math.inf
             unique_point = 0
 
-            # compute Manhattan Distinct between each input point, record closest point
+            # compute Manhattan Distance between each input point, record closest point
             for key, coordinate in coordinate_dict.items():
                 distance = my_coordinate.compute_distance(coordinate)
                 if distance < closest_distance:
@@ -131,7 +131,7 @@ def populate_matrix(matrix, coordinate_dict):
 
             matrix[row][column] = unique_point
 
-            if unique_point != 0 and my_coordinate.is_edge_point():
+            if unique_point != 0 and my_coordinate.is_edge_point(rows, columns):
                 edge_points.add(unique_point)
 
     return edge_points
@@ -143,10 +143,10 @@ def calculate_area(matrix, coordinate_dict, edge_list):
 
     matrix -> NxM np.array which lists the ids of coordinates closest to the input coordinates
     coordinate_dict -> dict of input coordinates
-    edge_list -> set containing elements
-    returns the maximum area of input coordinate not listed in the edge_list
+    edge_list -> set containing elements with infinite areas
+    returns the maximum area as an int and the id as an int of input coordinates not listed in the edge_list
     """
-    max_key, max_area = 0, 0
+    max_area, max_key = 0, 0
     for key in coordinate_dict:
         if key not in edge_list:
             area = np.count_nonzero(matrix == key)
